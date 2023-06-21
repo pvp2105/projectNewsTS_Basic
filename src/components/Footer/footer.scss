@@ -1,0 +1,51 @@
+footer {
+    background-image: url('https://qig.vn/Style/images/bgfooter.webp');
+}
+
+footer p {
+    color: #fff;
+}
+
+.title-footer {
+    font-weight: 500;
+    font-size: 19px;
+    color: #fff;
+    text-transform: uppercase;
+}
+
+.item-footer {
+    display: flex;
+}
+
+.detail-footer {
+    color: #fff;
+    font-weight: 400;
+    font-size: 15px;
+    text-decoration: none;
+}
+
+.local-footer {
+    color: #fff;
+    font-weight: 400;
+    font-size: 15px;
+}
+
+.detail-footer:hover {
+    cursor: pointer;
+    color: #c0c906;
+    text-decoration: underline;
+}
+
+.item-footer img {
+    margin-top: 2px;
+    height: 16px;
+}
+
+.detail-footer strong {
+    font-weight: 700;
+}
+
+.carousel-indicators button {
+    border-radius: 50%;
+    background-color: #1565C0;
+}
