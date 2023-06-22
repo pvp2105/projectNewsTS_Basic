@@ -7,7 +7,7 @@ function Header() {
   interface Title {
     id: number;
     tenDanhMuc: string;
-    }
+  }
 
   const [titles, setTitles] = useState<Title[]>([]);
   useEffect(() => {
@@ -15,7 +15,7 @@ function Header() {
       try {
         const token = "3EC79C17-63ED-4166-BD58-04397B94312C";
         const response = await axios.get(
-          "http://api-tintuc.enetviet.com/DanhMucTinTuc/GetDanhSachDanhMucTinTuc?loai_nguoi_dung=4&skip=0&limit=30",
+          "https://api-tintuc.enetviet.com/DanhMucTinTuc/GetDanhSachDanhMucTinTuc?loai_nguoi_dung=4&skip=0&limit=30",
           {
             headers: {
               Authorization: `${token}`,

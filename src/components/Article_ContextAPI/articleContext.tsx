@@ -38,7 +38,7 @@ function Article() {
       try {
         const token = "3EC79C17-63ED-4166-BD58-04397B94312C";
         const response = await axios.get(
-          `http://api-tintuc.enetviet.com/TinTucHeThong/GetDanhSachTinTuc?cap_don_vi=4&loai_nguoi_dung=4&ma_so=shn&skip=${skip}&limit=${limit}`,
+          `https://api-tintuc.enetviet.com/TinTucHeThong/GetDanhSachTinTuc?cap_don_vi=4&loai_nguoi_dung=4&ma_so=shn&skip=${skip}&limit=${limit}`,
           {
             headers: {
               Authorization: `${token}`,
