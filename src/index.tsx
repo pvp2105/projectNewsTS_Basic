@@ -7,15 +7,18 @@ import store from "./stores/store";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { NewsProvider } from "./components/Article_ContextAPI/NewsContext";
 
 const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
+  document.getElementById("root") as HTMLElement
 );
 root.render(
   <Router>
-    <Provider store={store}>
-      <App />
-    </Provider>
+    <NewsProvider>
+      <Provider store={store}>
+        <App />
+      </Provider>
+    </NewsProvider>
     {/* BrowserRouter: nó tạo ra 1 cơ chế định tuyến cho cả trang web*/}
   </Router>
 );

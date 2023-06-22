@@ -1,18 +1,21 @@
 import { useEffect, useMemo } from "react";
-import "./article.scss";
+import "../Article/article.scss";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { useDispatch } from "react-redux";
-import { reset, myNews, mySkip, myHasMore } from "../../reducers/newsSlice";
-import { useAppSelector } from "../../stores/store";
+import { useNewsContext } from "./NewsContext";
 
 function Article() {
-  const { news, skip, hasMore } = useAppSelector((state) => state.newsReducer);
+  const {
+    news,
+    skip,
+    hasMore,
+    handleChangeSKip,
+    setHasMore,
+    handleChangeNews,
+  } = useNewsContext();
 
   const limit = 8;
-
-  const dispatch = useDispatch();
 
   const newsView = useMemo(() => {
     const newsList = [...news];
@@ -27,7 +30,7 @@ function Article() {
   }, [news]);
 
   function loadMoreData(): void {
-    dispatch(mySkip(limit));
+    handleChangeSKip(limit);
   }
 
   useEffect(() => {
@@ -35,29 +38,30 @@ function Article() {
       try {
         const token = "3EC79C17-63ED-4166-BD58-04397B94312C";
         const response = await axios.get(
-          `https://api-tintuc.enetviet.com/TinTucHeThong/GetDanhSachTinTuc?cap_don_vi=4&loai_nguoi_dung=4&ma_so=shn&skip=${skip}&limit=${limit}`,
+          `http://api-tintuc.enetviet.com/TinTucHeThong/GetDanhSachTinTuc?cap_don_vi=4&loai_nguoi_dung=4&ma_so=shn&skip=${skip}&limit=${limit}`,
           {
             headers: {
               Authorization: `${token}`,
             },
           }
         );
+        handleChangeNews(response.data.data);
 
-        dispatch(myNews(response.data.data));
-
-        dispatch(myHasMore(response.data.data.length > 0));
+        setHasMore(response.data.data.length > 0);
       } catch (error) {
         console.log(error);
       }
     }
     fetchData();
-  }, [dispatch, skip]);
+  }, [skip]);
 
   useEffect(() => {
     return () => {
-      dispatch(reset());
+      handleChangeNews([]);
+      handleChangeSKip(0);
+      setHasMore(true);
     };
-  }, [dispatch]);
+  }, []);
 
   return (
     <div className="main">
@@ -90,7 +94,7 @@ function Article() {
             ))}
           </div>
           <InfiniteScroll
-            dataLength={news.length}
+            dataLength={newsView.length}
             next={loadMoreData}
             hasMore={hasMore}
             loader={<h4>Loading...</h4>}
