@@ -1,33 +1,36 @@
 import { useEffect, useMemo } from "react";
-import "./article.scss";
+import "../Article/article.scss";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { useDispatch } from "react-redux";
-import { reset, myNews, mySkip, myHasMore } from "../../reducers/newsSlice";
-import { useAppSelector } from "../../stores/store";
+import { useNewsContext } from "./NewsContext";
 
 function Article() {
-  const { news, skip, hasMore } = useAppSelector((state) => state.newsReducer);
+  const {
+    news,
+    skip,
+    hasMore,
+    handleChangeSKip,
+    setHasMore,
+    handleChangeNews,
+  } = useNewsContext();
 
   const limit = 8;
 
-  const dispatch = useDispatch();
+  const newsView = useMemo(() => {
+    const newsList = [...news];
+    const view = newsList?.sort((a, b) => {
+      const preDate: any = a.ngayTao;
+      const currentDate: any = b.ngayTao;
 
-  // const newsView = useMemo(() => {
-  //   const newsList = [...news];
-  //   const view = newsList?.sort((a, b) => {
-  //     const preDate: any = a.ngayTao;
-  //     const currentDate: any = b.ngayTao;
+      return new Date(currentDate).getTime() - new Date(preDate).getTime();
+    });
 
-  //     return new Date(currentDate).getTime() - new Date(preDate).getTime();
-  //   });
-
-  //   return view;
-  // }, [news]);
+    return view;
+  }, [news]);
 
   function loadMoreData(): void {
-    dispatch(mySkip(limit));
+    handleChangeSKip(limit);
   }
 
   useEffect(() => {
@@ -42,18 +45,9 @@ function Article() {
             },
           }
         );
+        handleChangeNews(response.data.data);
 
-        const newsList = [...response.data.data];
-
-        const sortedNews = newsList?.sort((a, b) => {
-          const preDate: any = a.ngayTao;
-          const currentDate: any = b.ngayTao;
-
-          return new Date(currentDate).getTime() - new Date(preDate).getTime();
-        });
-        dispatch(myNews(sortedNews));
-
-        dispatch(myHasMore(response.data.data.length > 0));
+        setHasMore(response.data.data.length > 0);
       } catch (error) {
         console.log(error);
       }
@@ -63,15 +57,17 @@ function Article() {
 
   useEffect(() => {
     return () => {
-      dispatch(reset());
+      handleChangeNews([]);
+      handleChangeSKip(0);
+      setHasMore(true);
     };
-  }, [dispatch]);
+  }, []);
 
   return (
     <div className="main">
       <div className="news m-2">
         <div className="row list-item m-3 justify-content-center">
-          {news.slice(0, 1).map((newsItem) => (
+          {newsView.slice(0, 1).map((newsItem) => (
             <Link
               to={`/detailArticle/${newsItem.id}`}
               key={newsItem.id}
@@ -82,7 +78,7 @@ function Article() {
             </Link>
           ))}
           <div className="col-md-3 items-right">
-            {news.slice(1, 4).map((newsItem) => (
+            {newsView.slice(1, 4).map((newsItem) => (
               <Link
                 to={`/detailArticle/${newsItem.id}`}
                 key={newsItem.id}
@@ -98,14 +94,14 @@ function Article() {
             ))}
           </div>
           <InfiniteScroll
-            dataLength={news.length}
+            dataLength={newsView.length}
             next={loadMoreData}
             hasMore={hasMore}
             loader={<h4>Loading...</h4>}
             scrollThreshold={1.0}
           >
             <div className="row list-item-more mb-5">
-              {news.slice(4).map((newsItem) => (
+              {newsView.slice(4).map((newsItem) => (
                 <Link
                   to={`/detailArticle/${newsItem.id}`}
                   key={newsItem.id}
